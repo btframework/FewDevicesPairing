@@ -16,7 +16,7 @@ namespace FewDevicesPairingConsole
 
         static void Main(string[] args)
         {
-            wclMessageBroadcaster.SetSyncMethod(wclMessageSynchronizationKind.skNone);
+            wclMessageBroadcaster.SetSyncMethod(wclMessageSynchronizationKind.skThread);
 
             wclBluetoothManager Manager = new wclBluetoothManager();
             Manager.OnDiscoveringStarted += new wclBluetoothEvent(Manager_OnDiscoveringStarted);
