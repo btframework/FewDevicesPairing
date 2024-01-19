@@ -52,17 +52,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="wclBluetoothFramework, Version=7.10.17.0, Culture=neutral, PublicKeyToken=31ded9088a20b7e8, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\WCL7\NET\Lib\netframework\wclBluetoothFramework.dll</HintPath>
+    <Reference Include="wclBluetoothFramework">
+      <HintPath>..\..\Lib\wclBluetoothFramework.dll</HintPath>
     </Reference>
-    <Reference Include="wclCommon, Version=7.6.3.0, Culture=neutral, PublicKeyToken=82c86b86abd59210, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\WCL7\NET\Lib\netframework\wclCommon.dll</HintPath>
+    <Reference Include="wclCommon">
+      <HintPath>..\..\Lib\wclCommon.dll</HintPath>
     </Reference>
-    <Reference Include="wclCommunication, Version=7.5.8.0, Culture=neutral, PublicKeyToken=959749996648afb6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\WCL7\NET\Lib\netframework\wclCommunication.dll</HintPath>
+    <Reference Include="wclCommunication">
+      <HintPath>..\..\Lib\wclCommunication.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
