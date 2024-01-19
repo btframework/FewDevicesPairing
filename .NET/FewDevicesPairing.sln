@@ -13,24 +13,15 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FewDveicesPairingWinFormsVb
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5A96D57A-F096-4670-9C84-F17EA6907A91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A96D57A-F096-4670-9C84-F17EA6907A91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A96D57A-F096-4670-9C84-F17EA6907A91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A96D57A-F096-4670-9C84-F17EA6907A91}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A6DB1185-6F2E-4C41-96BF-C0550555FCE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A6DB1185-6F2E-4C41-96BF-C0550555FCE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6DB1185-6F2E-4C41-96BF-C0550555FCE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6DB1185-6F2E-4C41-96BF-C0550555FCE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{00FED5A8-569E-4157-B035-1B8277D63B6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00FED5A8-569E-4157-B035-1B8277D63B6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00FED5A8-569E-4157-B035-1B8277D63B6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00FED5A8-569E-4157-B035-1B8277D63B6A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0378CE3-2B3F-4C53-9B2B-774B03C99810}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0378CE3-2B3F-4C53-9B2B-774B03C99810}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0378CE3-2B3F-4C53-9B2B-774B03C99810}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0378CE3-2B3F-4C53-9B2B-774B03C99810}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
