@@ -2,6 +2,14 @@
     <PropertyGroup>
         <ProjectGuid>{2308F9DF-49D3-4F2C-9B25-DB7B4D9C4F81}</ProjectGuid>
     </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Delphi\Console\FewDevicesPairingConsoleDelphi.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="CBuilder\Console\FewDevicesPairingConsoleCBuilder.cbproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
         <Borland.ProjectType/>
@@ -9,14 +17,32 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
+    <Target Name="FewDevicesPairingConsoleDelphi">
+        <MSBuild Projects="Delphi\Console\FewDevicesPairingConsoleDelphi.dproj"/>
+    </Target>
+    <Target Name="FewDevicesPairingConsoleDelphi:Clean">
+        <MSBuild Projects="Delphi\Console\FewDevicesPairingConsoleDelphi.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FewDevicesPairingConsoleDelphi:Make">
+        <MSBuild Projects="Delphi\Console\FewDevicesPairingConsoleDelphi.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="FewDevicesPairingConsoleCBuilder">
+        <MSBuild Projects="CBuilder\Console\FewDevicesPairingConsoleCBuilder.cbproj"/>
+    </Target>
+    <Target Name="FewDevicesPairingConsoleCBuilder:Clean">
+        <MSBuild Projects="CBuilder\Console\FewDevicesPairingConsoleCBuilder.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FewDevicesPairingConsoleCBuilder:Make">
+        <MSBuild Projects="CBuilder\Console\FewDevicesPairingConsoleCBuilder.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi;FewDevicesPairingConsoleCBuilder"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Clean;FewDevicesPairingConsoleCBuilder:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Make;FewDevicesPairingConsoleCBuilder:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
