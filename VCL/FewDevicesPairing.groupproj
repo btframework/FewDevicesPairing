@@ -9,6 +9,9 @@
         <Projects Include="CBuilder\Console\FewDevicesPairingConsoleCBuilder.cbproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Delphi\VCL\FewDevicesPairingVclDelphi.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +38,23 @@
     <Target Name="FewDevicesPairingConsoleCBuilder:Make">
         <MSBuild Projects="CBuilder\Console\FewDevicesPairingConsoleCBuilder.cbproj" Targets="Make"/>
     </Target>
+    <Target Name="FewDevicesPairingVclDelphi">
+        <MSBuild Projects="Delphi\VCL\FewDevicesPairingVclDelphi.dproj"/>
+    </Target>
+    <Target Name="FewDevicesPairingVclDelphi:Clean">
+        <MSBuild Projects="Delphi\VCL\FewDevicesPairingVclDelphi.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FewDevicesPairingVclDelphi:Make">
+        <MSBuild Projects="Delphi\VCL\FewDevicesPairingVclDelphi.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="FewDevicesPairingConsoleDelphi;FewDevicesPairingConsoleCBuilder"/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi;FewDevicesPairingConsoleCBuilder;FewDevicesPairingVclDelphi"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Clean;FewDevicesPairingConsoleCBuilder:Clean"/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Clean;FewDevicesPairingConsoleCBuilder:Clean;FewDevicesPairingVclDelphi:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Make;FewDevicesPairingConsoleCBuilder:Make"/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Make;FewDevicesPairingConsoleCBuilder:Make;FewDevicesPairingVclDelphi:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
