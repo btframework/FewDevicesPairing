@@ -12,6 +12,9 @@
         <Projects Include="Delphi\VCL\FewDevicesPairingVclDelphi.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="CBuilder\VCL\FewDevicesPairingVclCBuilder.cbproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +50,23 @@
     <Target Name="FewDevicesPairingVclDelphi:Make">
         <MSBuild Projects="Delphi\VCL\FewDevicesPairingVclDelphi.dproj" Targets="Make"/>
     </Target>
+    <Target Name="FewDevicesPairingVclCBuilder">
+        <MSBuild Projects="CBuilder\VCL\FewDevicesPairingVclCBuilder.cbproj"/>
+    </Target>
+    <Target Name="FewDevicesPairingVclCBuilder:Clean">
+        <MSBuild Projects="CBuilder\VCL\FewDevicesPairingVclCBuilder.cbproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FewDevicesPairingVclCBuilder:Make">
+        <MSBuild Projects="CBuilder\VCL\FewDevicesPairingVclCBuilder.cbproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="FewDevicesPairingConsoleDelphi;FewDevicesPairingConsoleCBuilder;FewDevicesPairingVclDelphi"/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi;FewDevicesPairingConsoleCBuilder;FewDevicesPairingVclDelphi;FewDevicesPairingVclCBuilder"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Clean;FewDevicesPairingConsoleCBuilder:Clean;FewDevicesPairingVclDelphi:Clean"/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Clean;FewDevicesPairingConsoleCBuilder:Clean;FewDevicesPairingVclDelphi:Clean;FewDevicesPairingVclCBuilder:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Make;FewDevicesPairingConsoleCBuilder:Make;FewDevicesPairingVclDelphi:Make"/>
+        <CallTarget Targets="FewDevicesPairingConsoleDelphi:Make;FewDevicesPairingConsoleCBuilder:Make;FewDevicesPairingVclDelphi:Make;FewDevicesPairingVclCBuilder:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
