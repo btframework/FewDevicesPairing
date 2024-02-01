@@ -9,10 +9,10 @@ namespace FewDevicesPairingConsole
 {
     class Program
     {
-        private static List<Int64> Devices;
-        private static AutoResetEvent OperationEvent;
-        private static Int32 OperationResult;
-        private static Int64 DeviceAddress;
+        private static List<Int64> FDevices;
+        private static AutoResetEvent FOperationEvent;
+        private static Int32 FOperationResult;
+        private static Int64 FAddress;
 
         static void Main(string[] args)
         {
@@ -54,9 +54,9 @@ namespace FewDevicesPairingConsole
                     {
                         Console.WriteLine("Found " + Radio.ApiName + " Bluetooth radio");
 
-                        Devices = new List<Int64>();
-                        OperationEvent = new AutoResetEvent(false);
-                        OperationResult = wclErrors.WCL_E_SUCCESS;
+                        FDevices = new List<Int64>();
+                        FOperationEvent = new AutoResetEvent(false);
+                        FOperationResult = wclErrors.WCL_E_SUCCESS;
 
                         Console.WriteLine("Start discovering");
                         Res = Radio.Discover(10, wclBluetoothDiscoverKind.dkClassic);
@@ -65,21 +65,21 @@ namespace FewDevicesPairingConsole
                         else
                         {
                             Console.WriteLine("Wait for discovering completion");
-                            OperationEvent.WaitOne();
+                            FOperationEvent.WaitOne();
 
-                            if (OperationResult == wclErrors.WCL_E_SUCCESS)
+                            if (FOperationResult == wclErrors.WCL_E_SUCCESS)
                             {
-                                if (Devices.Count == 0)
+                                if (FDevices.Count == 0)
                                     Console.WriteLine("No devices were found");
                                 else
                                 {
                                     Console.WriteLine("Starting pairing with all found devices");
 
-                                    for (int i = 0; i < Devices.Count; i++)
+                                    for (int i = 0; i < FDevices.Count; i++)
                                     {
-                                        DeviceAddress = Devices[i];
-                                        Console.WriteLine("Start pairing with device: " + DeviceAddress.ToString("X12"));
-                                        Res = Radio.RemotePair(DeviceAddress);
+                                        FAddress = FDevices[i];
+                                        Console.WriteLine("Start pairing with device: " + FAddress.ToString("X12"));
+                                        Res = Radio.RemotePair(FAddress);
                                         if (Res == wclBluetoothErrors.WCL_E_BLUETOOTH_ALREADY_PAIRED)
                                         {
                                             Console.WriteLine("Device already paired");
@@ -93,10 +93,10 @@ namespace FewDevicesPairingConsole
                                         }
 
                                         Console.WriteLine("Wait for pairing result");
-                                        OperationEvent.WaitOne();
+                                        FOperationEvent.WaitOne();
 
                                         // We have to wait a little bit before switching to next device.
-                                        if (i < Devices.Count - 1)
+                                        if (i < FDevices.Count - 1)
                                             Thread.Sleep(5000);
                                     }
 
@@ -105,11 +105,11 @@ namespace FewDevicesPairingConsole
                             }
                         }
 
-                        OperationEvent.Close();
-                        OperationEvent = null;
+                        FOperationEvent.Close();
+                        FOperationEvent = null;
 
-                        Devices.Clear();
-                        Devices = null;
+                        FDevices.Clear();
+                        FDevices = null;
 
                         Radio = null;
                     }
@@ -123,7 +123,7 @@ namespace FewDevicesPairingConsole
 
         private static void Manager_OnAuthenticationCompleted(object Sender, wclBluetoothRadio Radio, long Address, int Error)
         {
-            if (Address != DeviceAddress)
+            if (Address != FAddress)
                 Console.WriteLine("Pairing with unknown device " + Address.ToString("X12") + " completed with result: 0x" + Error.ToString("X8"));
             else
             {
@@ -133,14 +133,14 @@ namespace FewDevicesPairingConsole
                     Console.WriteLine("Pairing with device completed with error: 0x" + Error.ToString("X8"));
 
                 // Switch to next device.
-                OperationEvent.Set();
+                FOperationEvent.Set();
             }
         }
 
         private static void Manager_OnPinRequest(object Sender, wclBluetoothRadio Radio, long Address, out string Pin)
         {
             Pin = "";
-            if (Address != DeviceAddress)
+            if (Address != FAddress)
                 Console.WriteLine("Unknown device: " + Address.ToString("X12") + " requires PIN. Ignore");
             else
             {
@@ -152,7 +152,7 @@ namespace FewDevicesPairingConsole
         private static void Manager_OnPasskeyRequest(object Sender, wclBluetoothRadio Radio, long Address, out uint Passkey)
         {
             Passkey = 0;
-            if (Address != DeviceAddress)
+            if (Address != FAddress)
                 Console.WriteLine("Unknown device: " + Address.ToString("X12") + " requires passkey entering. Ignore");
             else
             {
@@ -163,7 +163,7 @@ namespace FewDevicesPairingConsole
 
         private static void Manager_OnPasskeyNotification(object Sender, wclBluetoothRadio Radio, long Address, uint Passkey)
         {
-            if (Address != DeviceAddress)
+            if (Address != FAddress)
                 Console.WriteLine("Unknown device: " + Address.ToString("X12") + " requires passkey entering. Ignore");
             else
                 Console.WriteLine("Device requires requires passkey entering.");
@@ -173,7 +173,7 @@ namespace FewDevicesPairingConsole
         {
             Confirm = false;
 
-            if (Address != DeviceAddress)
+            if (Address != FAddress)
                 Console.WriteLine("Unknown device: " + Address.ToString("X12") + " requires numeric comparison. Ignore");
             else
             {
@@ -184,20 +184,20 @@ namespace FewDevicesPairingConsole
         
         private static void  Manager_OnDiscoveringCompleted(object Sender, wclBluetoothRadio Radio, int Error)
         {
-            OperationResult = Error;
+            FOperationResult = Error;
 
             if (Error == wclErrors.WCL_E_SUCCESS)
                 Console.WriteLine("Discovering compeleted with success");
             else
                 Console.WriteLine("Discovering completed with error: 0x" + Error.ToString("X8"));
             
-            OperationEvent.Set();
+            FOperationEvent.Set();
         }
         
         private static void  Manager_OnDeviceFound(object Sender, wclBluetoothRadio Radio, long Address)
         {
             Console.WriteLine("Device " + Address.ToString("X12") + " found");
-            Devices.Add(Address);
+            FDevices.Add(Address);
         }
 
         private static void Manager_OnDiscoveringStarted(object Sender, wclBluetoothRadio Radio)

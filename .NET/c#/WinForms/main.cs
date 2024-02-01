@@ -10,63 +10,63 @@ namespace FewDevicesPairingWinForms
 {
     public partial class fmMain : Form
     {
-        private wclBluetoothManager Manager;
-        private wclBluetoothRadio Radio;
-        private List<Int64> Devices;
-        private int CurrentDeviceIndex;
-        private Int64 Address;
+        private wclBluetoothManager FManager;
+        private wclBluetoothRadio FRadio;
+        private List<Int64> FDevices;
+        private int FCurrentDeviceIndex;
+        private Int64 FAddress;
 
         private void Stop()
         {
             // Cleanup Radio object.
-            Radio = null;
+            FRadio = null;
             // Stop timer.
             tiWait.Stop();
             // Close Bluetooth Manager.
-            Manager.Close();
+            FManager.Close();
             // Clear found devices list.
-            Devices.Clear();
+            FDevices.Clear();
         }
 
         private void Start()
         {
             lbLog.Items.Clear();
 
-            Int32 Res = Manager.Open();
+            Int32 Res = FManager.Open();
             if (Res != wclErrors.WCL_E_SUCCESS)
                 lbLog.Items.Add("Unable to open Bluetooth Manager: 0x" + Res.ToString("X8"));
             else
             {
-                if (Manager.Count == 0)
+                if (FManager.Count == 0)
                     lbLog.Items.Add("Bluetooth hardware not found");
                 else
                 {
-                    for (int i = 0; i < Manager.Count; i++)
+                    for (int i = 0; i < FManager.Count; i++)
                     {
-                        if (Manager[i].Available)
+                        if (FManager[i].Available)
                         {
-                            Radio = Manager[i];
+                            FRadio = FManager[i];
                             break;
                         }
                     }
 
-                    if (Radio == null)
+                    if (FRadio == null)
                         lbLog.Items.Add("No available Bluetooth radio found");
                     else
                     {
                         lbLog.Items.Add("Try to start discovering");
-                        Res = Radio.Discover(10, wclBluetoothDiscoverKind.dkClassic);
+                        Res = FRadio.Discover(10, wclBluetoothDiscoverKind.dkClassic);
                         if (Res != wclErrors.WCL_E_SUCCESS)
                         {
                             lbLog.Items.Add("Failed to start discovering: 0x" + Res.ToString("X8"));
-                            Radio = null;
+                            FRadio = null;
                         }
                     }
                 }
 
                 // If something went wrong we must close manager.
-                if (Radio == null)
-                    Manager.Close();
+                if (FRadio == null)
+                    FManager.Close();
             }
         }
 
@@ -76,10 +76,10 @@ namespace FewDevicesPairingWinForms
 
             while (true)
             {
-                Address = Devices[CurrentDeviceIndex];
-                lbLog.Items.Add("Try to pair with device: " + Address.ToString("X12"));
+                FAddress = FDevices[FCurrentDeviceIndex];
+                lbLog.Items.Add("Try to pair with device: " + FAddress.ToString("X12"));
 
-                Int32 Res = Radio.RemotePair(Address);
+                Int32 Res = FRadio.RemotePair(FAddress);
                 if (Res == wclErrors.WCL_E_SUCCESS)
                     break;
                 if (Res == wclBluetoothErrors.WCL_E_BLUETOOTH_ALREADY_PAIRED)
@@ -87,8 +87,8 @@ namespace FewDevicesPairingWinForms
                 else
                     lbLog.Items.Add("Start pairing with device failed; 0x" + Res.ToString("X8"));
 
-                CurrentDeviceIndex++;
-                if (CurrentDeviceIndex == Devices.Count)
+                FCurrentDeviceIndex++;
+                if (FCurrentDeviceIndex == FDevices.Count)
                 {
                     lbLog.Items.Add("No more devices");
                     Stop();
@@ -104,23 +104,23 @@ namespace FewDevicesPairingWinForms
 
         private void fmMain_Load(object sender, EventArgs e)
         {
-            Manager = new wclBluetoothManager();
-            Manager.OnDiscoveringStarted += new wclBluetoothEvent(Manager_OnDiscoveringStarted);
-            Manager.OnDeviceFound += new wclBluetoothDeviceEvent(Manager_OnDeviceFound);
-            Manager.OnDiscoveringCompleted += new wclBluetoothResultEvent(Manager_OnDiscoveringCompleted);
-            Manager.OnNumericComparison += new wclBluetoothNumericComparisonEvent(Manager_OnNumericComparison);
-            Manager.OnPasskeyNotification += new wclBluetoothPasskeyNotificationEvent(Manager_OnPasskeyNotification);
-            Manager.OnPasskeyRequest += new wclBluetoothPasskeyRequestEvent(Manager_OnPasskeyRequest);
-            Manager.OnPinRequest += new wclBluetoothPinRequestEvent(Manager_OnPinRequest);
-            Manager.OnAuthenticationCompleted += new wclBluetoothDeviceResultEvent(Manager_OnAuthenticationCompleted);
+            FManager = new wclBluetoothManager();
+            FManager.OnDiscoveringStarted += new wclBluetoothEvent(Manager_OnDiscoveringStarted);
+            FManager.OnDeviceFound += new wclBluetoothDeviceEvent(Manager_OnDeviceFound);
+            FManager.OnDiscoveringCompleted += new wclBluetoothResultEvent(Manager_OnDiscoveringCompleted);
+            FManager.OnNumericComparison += new wclBluetoothNumericComparisonEvent(Manager_OnNumericComparison);
+            FManager.OnPasskeyNotification += new wclBluetoothPasskeyNotificationEvent(Manager_OnPasskeyNotification);
+            FManager.OnPasskeyRequest += new wclBluetoothPasskeyRequestEvent(Manager_OnPasskeyRequest);
+            FManager.OnPinRequest += new wclBluetoothPinRequestEvent(Manager_OnPinRequest);
+            FManager.OnAuthenticationCompleted += new wclBluetoothDeviceResultEvent(Manager_OnAuthenticationCompleted);
 
-            Devices = new List<Int64>();
-            Radio = null;
+            FDevices = new List<Int64>();
+            FRadio = null;
         }
 
         private void Manager_OnAuthenticationCompleted(object Sender, wclBluetoothRadio Radio, long Address, int Error)
         {
-            if (Address != this.Address)
+            if (Address != FAddress)
                 lbLog.Items.Add("Pairing with unknown device " + Address.ToString("X12") + " completed with result: 0x" + Error.ToString("X8"));
             else
             {
@@ -129,7 +129,7 @@ namespace FewDevicesPairingWinForms
                 else
                     lbLog.Items.Add("Pairing with device completed with error: 0x" + Error.ToString("X8"));
 
-                if (Radio != null)
+                if (FRadio != null)
                 {
                     lbLog.Items.Add("Switching to next device");
                     tiWait.Start();
@@ -140,7 +140,7 @@ namespace FewDevicesPairingWinForms
         private void Manager_OnPinRequest(object Sender, wclBluetoothRadio Radio, long Address, out string Pin)
         {
             Pin = "";
-            if (Address != this.Address)
+            if (Address != FAddress)
                 lbLog.Items.Add("Unknown device: " + Address.ToString("X12") + " requires PIN. Ignore");
             else
             {
@@ -152,7 +152,7 @@ namespace FewDevicesPairingWinForms
         private void Manager_OnPasskeyRequest(object Sender, wclBluetoothRadio Radio, long Address, out uint Passkey)
         {
             Passkey = 0;
-            if (Address != this.Address)
+            if (Address != FAddress)
                 lbLog.Items.Add("Unknown device: " + Address.ToString("X12") + " requires passkey entering. Ignore");
             else
             {
@@ -163,7 +163,7 @@ namespace FewDevicesPairingWinForms
 
         private void Manager_OnPasskeyNotification(object Sender, wclBluetoothRadio Radio, long Address, uint Passkey)
         {
-            if (Address != this.Address)
+            if (Address != FAddress)
                 lbLog.Items.Add("Unknown device: " + Address.ToString("X12") + " requires passkey entering. Ignore");
             else
                 lbLog.Items.Add("Device requires requires passkey entering.");
@@ -173,7 +173,7 @@ namespace FewDevicesPairingWinForms
         {
             Confirm = false;
 
-            if (Address != this.Address)
+            if (Address != FAddress)
                 lbLog.Items.Add("Unknown device: " + Address.ToString("X12") + " requires numeric comparison. Ignore");
             else
             {
@@ -192,9 +192,9 @@ namespace FewDevicesPairingWinForms
             else
             {
                 lbLog.Items.Add("Discovering comepleted");
-                if (Radio != null)
+                if (FRadio != null)
                 {
-                    if (Devices.Count == 0)
+                    if (FDevices.Count == 0)
                     {
                         lbLog.Items.Add("No Bluetooth devices were found");
                         Stop();
@@ -211,20 +211,20 @@ namespace FewDevicesPairingWinForms
         private void Manager_OnDeviceFound(object Sender, wclBluetoothRadio Radio, long Address)
         {
             lbLog.Items.Add("Device " + Address.ToString("X12") + " found");
-            Devices.Add(Address);
+            FDevices.Add(Address);
         }
 
         private void Manager_OnDiscoveringStarted(object Sender, wclBluetoothRadio Radio)
         {
-            Devices.Clear();
-            CurrentDeviceIndex = 0;
+            FDevices.Clear();
+            FCurrentDeviceIndex = 0;
 
             lbLog.Items.Add("Discovering started");
         }
 
         private void btStop_Click(object sender, EventArgs e)
         {
-            if (Radio == null)
+            if (FRadio == null)
                 lbLog.Items.Add("Pairing not running");
             else
                 Stop();
@@ -233,13 +233,13 @@ namespace FewDevicesPairingWinForms
         private void fmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             Stop();
-            Manager = null;
-            Devices = null;
+            FManager = null;
+            FDevices = null;
         }
 
         private void btStart_Click(object sender, EventArgs e)
         {
-            if (Radio != null)
+            if (FRadio != null)
                 lbLog.Items.Add("Pairing running");
             else
                 Start();
@@ -249,10 +249,10 @@ namespace FewDevicesPairingWinForms
         {
             tiWait.Stop();
 
-            if (Radio != null)
+            if (FRadio != null)
             {
-                CurrentDeviceIndex++;
-                if (CurrentDeviceIndex == Devices.Count)
+                FCurrentDeviceIndex++;
+                if (FCurrentDeviceIndex == FDevices.Count)
                 {
                     lbLog.Items.Add("No more devices");
                     Stop();

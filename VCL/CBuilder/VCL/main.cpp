@@ -60,7 +60,7 @@ void __fastcall TfmMain::ManagerAuthenticationCompleted(TObject *Sender,
 				IntToHex(Error, 8));
 		}
 
-		if (Radio != NULL)
+		if (FRadio != NULL)
 		{
 			lbLog->Items->Add("Switching to next device");
 			tiWait->Enabled = true;
@@ -87,7 +87,7 @@ void __fastcall TfmMain::ManagerDiscoveringCompleted(TObject *Sender,
 	else
 	{
 		lbLog->Items->Add("Discovering comepleted");
-		if (Radio != NULL)
+		if (FRadio != NULL)
 		{
 			if (FDevices.size() == 0)
 			{

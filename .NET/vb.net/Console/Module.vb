@@ -1,8 +1,8 @@
 ﻿Module Module1
-    Private Devices As List(Of Int64)
-    Private OperationEvent As AutoResetEvent
-    Private OperationResult As Int32
-    Private DeviceAddress As Int64
+    Private FDevices As List(Of Int64)
+    Private FOperationEvent As AutoResetEvent
+    Private FOperationResult As Int32
+    Private FAddress As Int64
 
     Private WithEvents Manager As wclBluetoothManager = New wclBluetoothManager()
 
@@ -30,9 +30,9 @@
                 Else
                     Console.WriteLine("Found " + Radio.ApiName + " Bluetooth radio")
 
-                    Devices = New List(Of Int64)()
-                    OperationEvent = New AutoResetEvent(False)
-                    OperationResult = wclErrors.WCL_E_SUCCESS
+                    FDevices = New List(Of Int64)()
+                    FOperationEvent = New AutoResetEvent(False)
+                    FOperationResult = wclErrors.WCL_E_SUCCESS
 
                     Console.WriteLine("Start discovering")
                     Res = Radio.Discover(10, wclBluetoothDiscoverKind.dkClassic)
@@ -40,18 +40,18 @@
                         Console.WriteLine("Unable to start discovering: 0x" + Res.ToString("X8"))
                     Else
                         Console.WriteLine("Wait for discovering completion")
-                        OperationEvent.WaitOne()
+                        FOperationEvent.WaitOne()
 
-                        If OperationResult = wclErrors.WCL_E_SUCCESS Then
-                            If Devices.Count = 0 Then
+                        If FOperationResult = wclErrors.WCL_E_SUCCESS Then
+                            If FDevices.Count = 0 Then
                                 Console.WriteLine("No devices were found")
                             Else
                                 Console.WriteLine("Starting pairing with all found devices")
 
-                                For i As Integer = 0 To Devices.Count - 1
-                                    DeviceAddress = Devices(i)
-                                    Console.WriteLine("Start pairing with device: " + DeviceAddress.ToString("X12"))
-                                    Res = Radio.RemotePair(DeviceAddress)
+                                For i As Integer = 0 To FDevices.Count - 1
+                                    FAddress = FDevices(i)
+                                    Console.WriteLine("Start pairing with device: " + FAddress.ToString("X12"))
+                                    Res = Radio.RemotePair(FAddress)
                                     If Res = wclBluetoothErrors.WCL_E_BLUETOOTH_ALREADY_PAIRED Then
                                         Console.WriteLine("Device already paired")
                                         Continue For
@@ -63,10 +63,10 @@
                                     End If
 
                                     Console.WriteLine("Wait for pairing result")
-                                    OperationEvent.WaitOne()
+                                    FOperationEvent.WaitOne()
 
                                     ' We have to wait a little bit before switching to next device.
-                                    If i < Devices.Count - 1 Then Thread.Sleep(5000)
+                                    If i < FDevices.Count - 1 Then Thread.Sleep(5000)
                                 Next i
 
                                 Console.WriteLine("Pairing completed")
@@ -74,11 +74,11 @@
                         End If
                     End If
 
-                    OperationEvent.Close()
-                    OperationEvent = Nothing
+                    FOperationEvent.Close()
+                    FOperationEvent = Nothing
 
-                    Devices.Clear()
-                    Devices = Nothing
+                    FDevices.Clear()
+                    FDevices = Nothing
 
                     Radio = Nothing
                 End If
@@ -95,11 +95,11 @@
 
     Private Sub Manager_OnDeviceFound(Sender As Object, Radio As wclBluetoothRadio, Address As Long) Handles Manager.OnDeviceFound
         Console.WriteLine("Device " + Address.ToString("X12") + " found")
-        Devices.Add(Address)
+        FDevices.Add(Address)
     End Sub
 
     Private Sub Manager_OnDiscoveringCompleted(Sender As Object, Radio As wclBluetoothRadio, [Error] As Integer) Handles Manager.OnDiscoveringCompleted
-        OperationResult = [Error]
+        FOperationResult = [Error]
 
         If [Error] = wclErrors.WCL_E_SUCCESS Then
             Console.WriteLine("Discovering compeleted with success")
@@ -107,13 +107,13 @@
             Console.WriteLine("Discovering completed with error: 0x" + [Error].ToString("X8"))
         End If
 
-        OperationEvent.Set()
+        FOperationEvent.Set()
     End Sub
 
     Private Sub Manager_OnNumericComparison(Sender As Object, Radio As wclBluetoothRadio, Address As Long, Number As UInteger, ByRef Confirm As Boolean) Handles Manager.OnNumericComparison
         Confirm = False
 
-        If Address <> DeviceAddress Then
+        If Address <> FAddress Then
             Console.WriteLine("Unknown device: " + Address.ToString("X12") + " requires numeric comparison. Ignore")
         Else
             Console.WriteLine("Device requires numeric comparison. Accept.")
@@ -122,7 +122,7 @@
     End Sub
 
     Private Sub Manager_OnPasskeyNotification(Sender As Object, Radio As wclBluetoothRadio, Address As Long, Passkey As UInteger) Handles Manager.OnPasskeyNotification
-        If Address <> DeviceAddress Then
+        If Address <> FAddress Then
             Console.WriteLine("Unknown device: " + Address.ToString("X12") + " requires passkey entering. Ignore")
         Else
             Console.WriteLine("Device requires requires passkey entering.")
@@ -131,7 +131,7 @@
 
     Private Sub Manager_OnPasskeyRequest(Sender As Object, Radio As wclBluetoothRadio, Address As Long, ByRef Passkey As UInteger) Handles Manager.OnPasskeyRequest
         Passkey = 0
-        If Address <> DeviceAddress Then
+        If Address <> FAddress Then
             Console.WriteLine("Unknown device: " + Address.ToString("X12") + " requires passkey entering. Ignore")
         Else
             Console.WriteLine("Device requires requires passkey providing.")
@@ -141,7 +141,7 @@
 
     Private Sub Manager_OnPinRequest(Sender As Object, Radio As wclBluetoothRadio, Address As Long, ByRef Pin As String) Handles Manager.OnPinRequest
         Pin = ""
-        If Address <> DeviceAddress Then
+        If Address <> FAddress Then
             Console.WriteLine("Unknown device: " + Address.ToString("X12") + " requires PIN. Ignore")
         Else
             Console.WriteLine("Device requires requires PIN. Provdes: 0000")
@@ -150,7 +150,7 @@
     End Sub
 
     Private Sub Manager_OnAuthenticationCompleted(Sender As Object, Radio As wclBluetoothRadio, Address As Long, [Error] As Integer) Handles Manager.OnAuthenticationCompleted
-        If Address <> DeviceAddress Then
+        If Address <> FAddress Then
             Console.WriteLine("Pairing with unknown device " + Address.ToString("X12") + " completed with result: 0x" + [Error].ToString("X8"))
         Else
             If [Error] = wclErrors.WCL_E_SUCCESS Then
@@ -159,7 +159,7 @@
                 Console.WriteLine("Pairing with device completed with error: 0x" + [Error].ToString("X8"))
 
                 ' Switch to next device.
-                OperationEvent.Set()
+                FOperationEvent.Set()
             End If
         End If
     End Sub

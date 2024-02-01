@@ -105,7 +105,7 @@ begin
         IntToHex(Error, 8));
     end;
 
-    if Radio <> nil then begin
+    if FRadio <> nil then begin
       lbLog.Items.Add('Switching to next device');
       tiWait.Enabled := True;
     end;
@@ -129,7 +129,7 @@ begin
 
   end else begin
     lbLog.Items.Add('Discovering comepleted');
-    if Radio <> nil then begin
+    if FRadio <> nil then begin
       if FDevices.Count = 0 then begin
         lbLog.Items.Add('No Bluetooth devices were found');
         Stop;
