@@ -131,7 +131,7 @@ private:
 public:
 	void Start()
 	{
-		CwclMessageBroadcaster::SetSyncMethod(skThread);
+		CwclMessageBroadcaster::SetMessageProcessingMethod(mpAsync);
 		
 		CwclBluetoothManager* Manager = new CwclBluetoothManager();
 		__hook(&CwclBluetoothManager::OnDiscoveringStarted, Manager, &CPairing::ManagerDiscoveringStarted);

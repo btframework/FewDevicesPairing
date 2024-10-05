@@ -150,7 +150,7 @@ var
   Radio: TwclBluetoothRadio;
   i: Integer;
 begin
-  TwclMessageBroadcaster.SetSyncMethod(skThread);
+  TwclMessageBroadcaster.SetMessageProcessingMethod(mpAsync);
 
   Manager := TwclBluetoothManager.Create(nil);
   Manager.OnDiscoveringStarted := ManagerDiscoveringStarted;

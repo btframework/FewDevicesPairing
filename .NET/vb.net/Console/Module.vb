@@ -7,7 +7,7 @@
     Private WithEvents Manager As wclBluetoothManager = New wclBluetoothManager()
 
     Sub Main()
-        wclMessageBroadcaster.SetSyncMethod(wclMessageSynchronizationKind.skThread)
+        wclMessageBroadcaster.SetMessageProcessingMethod(wclMessageProcessingMethod.mpAsync)
 
         Dim Res As Int32 = Manager.Open()
         If Res <> wclErrors.WCL_E_SUCCESS Then
