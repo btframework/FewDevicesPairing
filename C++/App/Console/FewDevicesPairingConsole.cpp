@@ -131,9 +131,8 @@ private:
 public:
 	void Start()
 	{
-		CwclMessageBroadcaster::SetMessageProcessingMethod(mpAsync);
-		
 		CwclBluetoothManager* Manager = new CwclBluetoothManager();
+		Manager->MessageProcessing = mpAsync;
 		__hook(&CwclBluetoothManager::OnDiscoveringStarted, Manager, &CPairing::ManagerDiscoveringStarted);
 		__hook(&CwclBluetoothManager::OnDeviceFound, Manager, &CPairing::ManagerDeviceFound);
 		__hook(&CwclBluetoothManager::OnDiscoveringCompleted, Manager, &CPairing::ManagerDiscoveringCompleted);

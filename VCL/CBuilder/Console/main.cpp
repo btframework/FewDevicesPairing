@@ -146,9 +146,8 @@ private:
 public:
 	void __fastcall Start()
 	{
-		TwclMessageBroadcaster::SetMessageProcessingMethod(mpAsync);
-
 		TwclBluetoothManager* Manager = new TwclBluetoothManager(NULL);
+		Manager->MessageProcessing = mpAsync;
 		Manager->OnDiscoveringStarted = ManagerDiscoveringStarted;
 		Manager->OnDeviceFound = ManagerDeviceFound;
 		Manager->OnDiscoveringCompleted = ManagerDiscoveringCompleted;
